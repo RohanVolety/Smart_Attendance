@@ -12,6 +12,11 @@ path = 'Images'
 myList = os.listdir(path)
 print(myList)
 
+# clear csv file
+f = open("smart.csv", "w")
+f.truncate()
+f.close()
+
 # list that will contain all imported images
 images = []
 
@@ -29,23 +34,20 @@ print(classNames)
 
 
 def attendanceMarker(name):
-  with open('att1.csv','r+') as f:
+  with open('smart.csv','r+') as f:
     presentList=f.readlines()
     nameList=[]
     for line in presentList:
-      entry=line.split(',')
+      entry=line.split(',') 
       nameList.append(entry[0])
       
     if name not in nameList:
       now=datetime.now()
       datestr=now.strftime('%H:%M:%S')
       f.writelines(f'\n{name},{datestr}')
+      print(name)
 
-
-  
-  
-  
-  
+ 
 # encoding images
 def imgEncodings(images):
   encodeList = []
@@ -75,22 +77,22 @@ while True:
   for encodeFace, faceLoc in zip(encodeCurFrame, facesCurFrame):
     matches = face_recognition.compare_faces(encodeList, encodeFace)
     faceDistance = face_recognition.face_distance(encodeList, encodeFace)
+    if min(faceDistance) > 0.4:
+      continue
     print(faceDistance)
     matchIndex = np.argmin(faceDistance)
-
+    
+    
     if matches[matchIndex]:
       name = classNames[matchIndex].upper()
       print(name)
       attendanceMarker(name)
       #displaying content of csv
-      with open('att1.csv', 'r+') as f:
+      with open('smart.csv', 'r+') as f:
         presentList = f.readlines()
         print(presentList)
       
-      #clear csv file
-      f=open("attedence.csv","w")
-      f.truncate()
-      f.close()
+   
 
       # creating bounding box and showing name of person identified
       y1, x2, y2, x1 = faceLoc
@@ -99,9 +101,6 @@ while True:
       cv2.rectangle(img, (x1, y2 - 35), (x2, y2), (0, 255, 0), cv2.FILLED)
       cv2.putText(img, name, (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 2)
 
-
-
-
-
   cv2.imshow('webcam', img)
   cv2.waitKey(1)
+
