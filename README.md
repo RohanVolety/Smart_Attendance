@@ -1,12 +1,8 @@
 # SMART ATTENDANCE
  
-Foobar is a Python library for dealing with word pluralization.
-
-## Installation
-
 Git clone the project 
 
-Open the project in your local IDE and run the code.
+Open the project in your local IDE and run python attendance.py.
 
 ## Usage
 
